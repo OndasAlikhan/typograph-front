@@ -1,1 +1,1 @@
-type LetterObj = { color: 'w' | 'g' | 'r'; letter: string; }
+type LetterObj = { color: "w" | "g" | "r"; letter: string };
