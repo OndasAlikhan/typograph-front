@@ -187,13 +187,13 @@ export default function RenderText({ quote }: Props) {
                 >
                     <SecondsElapsed running={isTimerStarted} />
 
-                    <p
+                    <div
                         className={`font-mono text-xl h-[200px] ${
                             !isInputFocused && "blur-sm"
                         }`}
                     >
                         {renderedText}
-                    </p>
+                    </div>
                     {!isInputFocused && (
                         <span className="absolute text-lg font-mono left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                             Click to focus
