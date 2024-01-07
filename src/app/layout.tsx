@@ -1,10 +1,14 @@
 import Header from "@/components/common/Header";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { Footer } from "@/components/common/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppinsFont = Poppins({
+    weight: ["300", "400", "500", "600", "700"],
+    subsets: ["latin"],
+    variable: "--font-poppins",
+});
 
 export const metadata: Metadata = {
     title: "Typographer",
@@ -18,7 +22,8 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body>
+            <body className={`${poppinsFont.variable} font-sans`}>
+                <div className="absolute top-1"></div>
                 <Header />
                 <main className="min-h-[calc(100vh-112px)] p-24">
                     {children}

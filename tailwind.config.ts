@@ -9,11 +9,12 @@ const config: Config = {
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
     theme: {
-        // colors: {
-        //     "default-color": "#111827",
-        // },
         extend: {
+            boxShadow: {
+                primary: "1px 3px 10px 0px rgba(0, 0, 0, 0.15)",
+            },
             colors: {
+                "background-primary": "#E1DFDD",
                 "default-color": colors.slate[900],
                 "secondary-color": colors.slate[700],
                 "accent-color": colors.indigo,
@@ -24,7 +25,7 @@ const config: Config = {
                     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
             fontFamily: {
-                sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+                sans: ["var(--font-poppins)", ...defaultTheme.fontFamily.sans],
             },
         },
     },

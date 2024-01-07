@@ -5,26 +5,33 @@ import TypeInput from "./TypeInput";
 import Timer from "@/utils/timer";
 import { SecondsElapsed } from "./SecondsElapsed";
 import { FinishGameWrapper } from "./FinishGameWrapper";
-import { Button } from "../common/Button";
 import { Card } from "../common/Card";
-import { TyperCard } from "../common/TyperCard";
+import { LetterObj, getRandomQuote } from "@/types";
+
+type Props = {
+    quote?: string;
+};
 
 const colorClassNameMap = {
     w: "text-default-color",
-    g: "text-green-400",
-    r: "text-red-400",
+    g: "text-green-700",
+    r: "text-red-700",
 };
 
-const text =
-    "A hospital worker almost catches me, but I head him off with a confrontation";
-const initialTextArray: LetterObj[][] = text
-    .split(" ")
-    .map((word) => word.split("").map((letter) => ({ color: "w", letter })));
+const getLetterObjArray = (text?: string): LetterObj[][] => {
+    if (text)
+        return text
+            .split(" ")
+            .map((word) =>
+                word.split("").map((letter) => ({ color: "w", letter })),
+            );
+    else return [];
+};
 
 const timer = new Timer();
 
-export default function RenderText() {
-    const [textArray, setTextArray] = useState(initialTextArray);
+export default function RenderText({ quote }: Props) {
+    const [textArray, setTextArray] = useState(getLetterObjArray(quote));
     const [filledArray, setFilledArray] = useState<string[]>(
         new Array(textArray.length).fill(""),
     );
@@ -36,8 +43,6 @@ export default function RenderText() {
     const [inputValue, setInputValue] = useState("");
     const [isInputFocused, setIsInputFocused] = useState(true);
     const [isGameFinished, setIsGameFinished] = useState(false);
-
-    // const timer = useRef(new Timer());
 
     // runs on every key stroke
     useEffect(() => {
@@ -119,7 +124,7 @@ export default function RenderText() {
         setIsInputFocused(isFocused);
     };
     const handleTryAgain = () => {
-        setTextArray(initialTextArray);
+        setTextArray(getLetterObjArray(getRandomQuote()?.Text));
         setFilledArray(new Array(textArray.length).fill(""));
         setCurrentWordIndex(0);
         setIsTimerStarted(false);
@@ -173,7 +178,7 @@ export default function RenderText() {
             wpm={wpm}
             onTryAgain={handleTryAgain}
         >
-            <TyperCard>
+            <Card>
                 <div
                     className="relative"
                     onClick={() => {
@@ -183,7 +188,7 @@ export default function RenderText() {
                     <SecondsElapsed running={isTimerStarted} />
 
                     <p
-                        className={`font-mono text-2xl h-[120px] ${
+                        className={`font-mono text-xl h-[200px] ${
                             !isInputFocused && "blur-sm"
                         }`}
                     >
@@ -195,8 +200,8 @@ export default function RenderText() {
                         </span>
                     )}
                 </div>
-            </TyperCard>
-            <div className="mt-4 w-1/2 mx-auto">
+            </Card>
+            <div className="mt-4 w-1/2 mx-auto absolute">
                 <TypeInput
                     inputValue={inputValue}
                     isFocused={isInputFocused}
@@ -205,32 +210,27 @@ export default function RenderText() {
                     onFocusChange={handleFocusChange}
                 />
             </div>
-            <div className="max-w-fit transition-all flex gap-5 mt-20">
-                <Card>
-                    <div className="w-[336px] h-[120px]">
-                        <div className="text-sm">
-                            Enter a going competition with others
-                        </div>
-                        <div className="mt-10 w-fit">
-                            <Button>
-                                <div>Enter a race</div>
-                            </Button>
-                        </div>
+            {/* <div className="max-w-fit transition-all flex gap-10 mt-10">
+                <div className="w-[240px] h-[110px] flex flex-col justify-between">
+                    <div className="text-sm">
+                        Compete with players from all around the world to prove
+                        your skills
                     </div>
-                </Card>
-                <Card>
-                    <div className="w-[336px] h-[120px]">
-                        <div className="text-sm">
-                            Enter a going competition with others
-                        </div>
-                        <div className="mt-10 w-fit">
-                            <Button>
-                                <div>Create a lobby</div>
-                            </Button>
-                        </div>
+
+                    <div className="border-b-2 border-black text-xl w-fit cursor-pointer">
+                        ENTER A COMPETITION
                     </div>
-                </Card>
-            </div>
+                </div>
+                <div className="w-[240px] h-[110px] flex flex-col justify-between">
+                    <div className="text-sm">
+                        Have a friendly match or a battle that defines your
+                        destiny
+                    </div>
+                    <div className="border-b-2 border-black text-xl w-fit cursor-pointer">
+                        CREATE A LOBBY
+                    </div>
+                </div>
+            </div> */}
         </FinishGameWrapper>
     );
 }

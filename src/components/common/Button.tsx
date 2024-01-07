@@ -4,7 +4,7 @@ type Props = {
 
 export const Button = ({ children }: Props) => {
     return (
-        <div className="text-white bg-accent-color-600 px-2 py-1 rounded">
+        <div className="text-white bg-black hover:opacity-75 px-6 py-[2px] rounded-2xl cursor-pointer">
             {children}
         </div>
     );

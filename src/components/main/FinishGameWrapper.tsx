@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "../common/Button";
+
 type Props = {
     children: React.ReactNode;
     isGameFinished: boolean;
@@ -30,10 +32,12 @@ export const FinishGameWrapper = ({
                         className="mx-auto max-w-fit mt-5"
                         onClick={onTryAgain}
                     >
-                        <div>Try again</div>
-                        <div className="max-w-fit mx-auto text-xs">
+                        <Button>
+                            <div>Try again</div>
+                        </Button>
+                        {/* <div className="max-w-fit mx-auto text-xs">
                             (or space)
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             ) : (

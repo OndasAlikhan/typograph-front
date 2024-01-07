@@ -5,7 +5,7 @@
 @layer base {
   html {
     @apply text-default-color;
-    @apply bg-white;
+    @apply bg-background-primary;
   }
   body {
     @apply max-w-[1440px] mx-auto;
