@@ -18,6 +18,11 @@ const colorClassNameMap = {
     r: "text-red-700",
 };
 
+const mapUnusualLetters = (letter: string) => {
+    if (letter === `‘`) return `'`;
+    return letter;
+};
+
 const getLetterObjArray = (text?: string): LetterObj[][] => {
     if (text)
         return text
@@ -46,11 +51,13 @@ export default function RenderText({ quote }: Props) {
 
     // runs on every key stroke
     useEffect(() => {
+        /* Starting game */
         if (!timer.isRunning && inputValue.length > 0) {
             timer.startTimer();
             setIsTimerStarted(true);
         }
 
+        /* Finished game */
         if (
             currentWordIndex >= textArray.length - 1 &&
             inputValue.length === textArray[currentWordIndex].length
@@ -65,7 +72,7 @@ export default function RenderText({ quote }: Props) {
 
         const word = textArray[currentWordIndex];
 
-        // next word
+        /* Next word */
         if (
             !word?.some((item) => item.color === "w") &&
             inputValue?.[inputValue.length - 1] === " "
@@ -82,16 +89,21 @@ export default function RenderText({ quote }: Props) {
             return;
         }
 
+        /* Check if inputted letter is correct */
         const changedWord = word.map<LetterObj>((item, index) => {
-            if (inputValue[index] === item.letter)
+            const inputtedLetter = mapUnusualLetters(inputValue[index]);
+
+            if (inputtedLetter === item.letter)
                 return { color: "g", letter: item.letter };
-            else if (inputValue[index] && inputValue[index] !== item.letter)
+            else if (inputtedLetter && inputtedLetter !== item.letter)
                 return { color: "r", letter: item.letter };
             return { color: "w", letter: item.letter };
         });
         const newTextArray = textArray.map((value, index) =>
             index === currentWordIndex ? changedWord : value,
         );
+
+        /* Update state of the whole text */
         setTextArray(newTextArray);
     }, [inputValue]);
 
@@ -188,7 +200,7 @@ export default function RenderText({ quote }: Props) {
                     <SecondsElapsed running={isTimerStarted} />
 
                     <div
-                        className={`font-mono text-xl h-[200px] ${
+                        className={`font-mono text-xl min-h-[200px] ${
                             !isInputFocused && "blur-sm"
                         }`}
                     >
@@ -201,7 +213,7 @@ export default function RenderText({ quote }: Props) {
                     )}
                 </div>
             </Card>
-            <div className="mt-4 w-1/2 mx-auto absolute">
+            <div className="mt-4 w-1/2 mx-auto absolute top-0">
                 <TypeInput
                     inputValue={inputValue}
                     isFocused={isInputFocused}

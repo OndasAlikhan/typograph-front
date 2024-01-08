@@ -27,7 +27,7 @@ export default function RootLayout({
             <body className={`${poppinsFont.variable} font-sans`}>
                 <div className="absolute top-1"></div>
                 <Header />
-                <main className="min-h-[calc(100vh-112px)] p-24">
+                <main className="min-h-[calc(100vh-112px)] p-3 lg:p-24">
                     {children}
                 </main>
                 <Footer />
