@@ -36,7 +36,7 @@ export const SecondsElapsed = ({ running }: Props) => {
     return (
         <>
             {running && (
-                <span className="absolute -top-6 text-gray-600 font-mono font-light text-xs bg-white px-1">
+                <span className="absolute -top-6 text-gray-600 font-mono rounded font-light text-xs bg-white px-1">
                     {parseSeconds(secondsElapsed)}
                 </span>
             )}

@@ -36,11 +36,17 @@ const getLetterObjArray = (text?: string): LetterObj[][] => {
 const timer = new Timer();
 
 export default function RenderText({ quote }: Props) {
+    const textRef = useRef<HTMLDivElement>(null);
+    const caretRef = useRef<HTMLSpanElement>(null);
+
     const [textArray, setTextArray] = useState(getLetterObjArray(quote));
+
+    // an array of already typed words
     const [filledArray, setFilledArray] = useState<string[]>(
         new Array(textArray.length).fill(""),
     );
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
 
     const [isTimerStarted, setIsTimerStarted] = useState(false);
     const [wpm, setWpm] = useState(0);
@@ -51,6 +57,8 @@ export default function RenderText({ quote }: Props) {
 
     // runs on every key stroke
     useEffect(() => {
+        setCurrentLetterIndex(inputValue.length);
+
         /* Starting game */
         if (!timer.isRunning && inputValue.length > 0) {
             timer.startTimer();
@@ -78,6 +86,7 @@ export default function RenderText({ quote }: Props) {
             inputValue?.[inputValue.length - 1] === " "
         ) {
             setInputValue("");
+            setCurrentLetterIndex(0);
             setCurrentWordIndex((prev) => prev + 1);
             setFilledArray((prev) => {
                 return prev.map((item, i) =>
@@ -106,6 +115,38 @@ export default function RenderText({ quote }: Props) {
         /* Update state of the whole text */
         setTextArray(newTextArray);
     }, [inputValue]);
+
+    useEffect(() => {
+        // on first render, show caret
+        if (
+            currentLetterIndex === 0 &&
+            currentWordIndex === 0 &&
+            caretRef.current
+        )
+            caretRef.current.style.display = "block";
+
+        const wordNode = textRef.current?.children?.[currentWordIndex];
+
+        let letterNode: Element;
+        if (wordNode?.children.length === currentLetterIndex) {
+            // last letter in word
+            letterNode = wordNode?.children?.[
+                currentLetterIndex - 1
+            ] as Element;
+            const rect = letterNode?.getBoundingClientRect?.() || {};
+            if (caretRef.current) caretRef.current.style.top = rect.y + "px";
+            if (caretRef.current)
+                caretRef.current.style.left = Number(rect.x + 12) + "px";
+        } else {
+            letterNode = wordNode?.children?.[currentLetterIndex] as Element;
+            const rect = letterNode?.getBoundingClientRect?.() || {};
+            if (caretRef.current) caretRef.current.style.top = rect.y + "px";
+            if (caretRef.current)
+                caretRef.current.style.left = Number(rect.x - 1) + "px";
+        }
+
+        // console.log("letterNode", letterNode);
+    }, [currentLetterIndex, currentWordIndex]);
 
     const handleInputValueChange = (value: string) => {
         if (
@@ -145,38 +186,10 @@ export default function RenderText({ quote }: Props) {
         setIsGameFinished(false);
     };
 
-    const renderCursor = (
-        letter: string,
-        wordIndex: number,
-        letterIndex: number,
-    ) => {
-        switch (true) {
-            case wordIndex === currentWordIndex &&
-                inputValue.length === 0 &&
-                letterIndex === 0:
-                return (
-                    <>
-                        <span className="before:content-[''] w-[1px] h-[20px] inline-block bg-black absolute"></span>
-                        {letter}
-                    </>
-                );
-            case wordIndex === currentWordIndex &&
-                letterIndex + 1 === inputValue.length:
-                return (
-                    <>
-                        {letter}
-                        <span className="before:content-[''] w-[1px] h-[20px] inline-block bg-black absolute"></span>
-                    </>
-                );
-            default:
-                return letter;
-        }
-    };
-
     const renderWord = (word: LetterObj[], wordIndex: number) =>
         word.map((item, letterIndex) => (
             <span key={letterIndex} className={colorClassNameMap[item.color]}>
-                {renderCursor(item.letter, wordIndex, letterIndex)}
+                {item.letter}
             </span>
         ));
 
@@ -191,6 +204,10 @@ export default function RenderText({ quote }: Props) {
             onTryAgain={handleTryAgain}
         >
             <Card>
+                <span
+                    ref={caretRef}
+                    className="before:content-[''] w-[2px] h-[21px] hidden transition-all bg-black absolute"
+                ></span>
                 <div
                     className="relative"
                     onClick={() => {
@@ -200,6 +217,8 @@ export default function RenderText({ quote }: Props) {
                     <SecondsElapsed running={isTimerStarted} />
 
                     <div
+                        id="text"
+                        ref={textRef}
                         className={`font-mono text-xl min-h-[200px] ${
                             !isInputFocused && "blur-sm"
                         }`}

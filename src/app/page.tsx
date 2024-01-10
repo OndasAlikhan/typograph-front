@@ -1,6 +1,7 @@
 import RenderText from "@/components/main/RenderText";
 import { getRandomQuote } from "@/types";
-import _sample from "lodash/sample";
+
+export const revalidate = 300;
 
 export default function Home() {
     const randomQuote = getRandomQuote();
