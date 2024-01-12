@@ -72,7 +72,6 @@ export default function RenderText({ quote }: Props) {
         ) {
             setIsGameFinished(true);
             const minutes = timer.stopTimer();
-            calculateWpm(textArray, minutes)
             setWpm(calculateWpm(textArray, minutes));
             setIsTimerStarted(false);
             return;
