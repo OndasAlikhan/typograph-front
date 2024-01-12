@@ -177,7 +177,7 @@ export default function RenderText({ quote }: Props) {
             60;
 
         return wpm;
-    }
+    };
 
     const handleInputValueChange = (value: string) => {
         if (
