@@ -173,15 +173,9 @@ export default function RenderText({ quote }: Props) {
         incorrectWords = totalWords - correctWords;
         accuracy = (overallCorrectLetters / overallLetters).toFixed(2);
 
-        console.log(`totalWords ${totalWords}`)
-        console.log(`correctWords ${correctWords}`)
-        console.log(`incorrectWords ${incorrectWords}`)
-        console.log(`overallLetters ${overallLetters}`)
-        console.log(`overallCorrectLetters ${overallCorrectLetters}`)
-        console.log(`accuracy ${accuracy}`)
-        console.log(`timeSpent ${timeSpent}`)
-
-        const wpm = (correctWords + accuracy * incorrectWords) / (timeSpent * 60)  * 60;
+        const wpm =
+            ((correctWords + accuracy * incorrectWords) / (timeSpent * 60)) *
+            60;
 
         return wpm;
     }
