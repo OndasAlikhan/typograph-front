@@ -72,8 +72,8 @@ export default function RenderText({ quote }: Props) {
         ) {
             setIsGameFinished(true);
             const minutes = timer.stopTimer();
-            const wpm = textArray.length / minutes;
-            setWpm(wpm);
+            calculateWpm(textArray, minutes)
+            setWpm(calculateWpm(textArray, minutes));
             setIsTimerStarted(false);
             return;
         }
@@ -147,6 +147,44 @@ export default function RenderText({ quote }: Props) {
 
         // console.log("letterNode", letterNode);
     }, [currentLetterIndex, currentWordIndex]);
+
+    const calculateWpm = (textArray, timeSpent) => {
+        let accuracy = 0;
+        let correctWords = 0;
+        const totalWords = textArray.length;
+        let incorrectWords = 0;
+        let overallCorrectLetters = 0;
+        let overallLetters = 0;
+
+        for (let i = 0; i < textArray.length; i++) {
+            let correctLetters = 0;
+            for (let j = 0; j < textArray[i].length; j++) {
+                if (textArray[i][j].color === "g") {
+                    correctLetters++;
+                    overallCorrectLetters++;
+                }
+                overallLetters++;
+            }
+            if (correctLetters === textArray[i].length) {
+                correctWords++;
+            }
+        }
+
+        incorrectWords = totalWords - correctWords;
+        accuracy = (overallCorrectLetters / overallLetters).toFixed(2);
+
+        console.log(`totalWords ${totalWords}`)
+        console.log(`correctWords ${correctWords}`)
+        console.log(`incorrectWords ${incorrectWords}`)
+        console.log(`overallLetters ${overallLetters}`)
+        console.log(`overallCorrectLetters ${overallCorrectLetters}`)
+        console.log(`accuracy ${accuracy}`)
+        console.log(`timeSpent ${timeSpent}`)
+
+        const wpm = (correctWords + accuracy * incorrectWords) / (timeSpent * 60)  * 60;
+
+        return wpm;
+    }
 
     const handleInputValueChange = (value: string) => {
         if (
