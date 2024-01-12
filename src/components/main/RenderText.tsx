@@ -147,8 +147,7 @@ export default function RenderText({ quote }: Props) {
         // console.log("letterNode", letterNode);
     }, [currentLetterIndex, currentWordIndex]);
 
-    const calculateWpm = (textArray, timeSpent) => {
-        let accuracy = 0;
+    const calculateWpm = (textArray: LetterObj[][], timeSpent: number) => {
         let correctWords = 0;
         const totalWords = textArray.length;
         let incorrectWords = 0;
@@ -170,10 +169,11 @@ export default function RenderText({ quote }: Props) {
         }
 
         incorrectWords = totalWords - correctWords;
-        accuracy = (overallCorrectLetters / overallLetters).toFixed(2);
+        const accuracy = (overallCorrectLetters / overallLetters).toFixed(2);
 
         const wpm =
-            ((correctWords + accuracy * incorrectWords) / (timeSpent * 60)) *
+            ((correctWords + Number(accuracy) * incorrectWords) /
+                (timeSpent * 60)) *
             60;
 
         return wpm;
