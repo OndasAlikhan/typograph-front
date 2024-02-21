@@ -79,7 +79,7 @@ export default function RenderText({ quote }: Props) {
         ) {
             setIsGameFinished(true);
             const minutes = timer.stopTimer();
-            const wpm = textArray.length / minutes;
+            const wpm = calculateWpm(textArray, minutes);
             // setWpm(wpm);
             setResult({
                 wpm: wpm.toFixed(2),
@@ -160,6 +160,38 @@ export default function RenderText({ quote }: Props) {
 
         // console.log("letterNode", letterNode);
     }, [currentLetterIndex, currentWordIndex]);
+
+    const calculateWpm = (textArray: LetterObj[][], timeSpent: number) => {
+        let correctWords = 0;
+        const totalWords = textArray.length;
+        let incorrectWords = 0;
+        let overallCorrectLetters = 0;
+        let overallLetters = 0;
+
+        for (let i = 0; i < textArray.length; i++) {
+            let correctLetters = 0;
+            for (let j = 0; j < textArray[i].length; j++) {
+                if (textArray[i][j].color === "g") {
+                    correctLetters++;
+                    overallCorrectLetters++;
+                }
+                overallLetters++;
+            }
+            if (correctLetters === textArray[i].length) {
+                correctWords++;
+            }
+        }
+
+        incorrectWords = totalWords - correctWords;
+        const accuracy = (overallCorrectLetters / overallLetters).toFixed(2);
+
+        const wpm =
+            ((correctWords + Number(accuracy) * incorrectWords) /
+                (timeSpent * 60)) *
+            60;
+
+        return wpm;
+    };
 
     const handleInputValueChange = (value: string) => {
         if (
