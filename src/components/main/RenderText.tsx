@@ -4,12 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import TypeInput from "./TypeInput";
 import Timer from "@/utils/timer";
 import { SecondsElapsed } from "./SecondsElapsed";
-import { FinishGameWrapper } from "./FinishGameWrapper";
+import { FinishGameWrapper, Result } from "./FinishGameWrapper";
 import { Card } from "../common/Card";
-import { LetterObj, getRandomQuote } from "@/types";
+import { LetterObj } from "@/types";
+import { getRandomParagraph } from "@/features/quote/action";
 
+type Quote = {
+    id: number;
+    text: string;
+    source: string;
+    length: number;
+};
 type Props = {
-    quote?: string;
+    quote: Quote;
 };
 
 const colorClassNameMap = {
@@ -39,7 +46,7 @@ export default function RenderText({ quote }: Props) {
     const textRef = useRef<HTMLDivElement>(null);
     const caretRef = useRef<HTMLSpanElement>(null);
 
-    const [textArray, setTextArray] = useState(getLetterObjArray(quote));
+    const [textArray, setTextArray] = useState(getLetterObjArray(quote?.text));
 
     // an array of already typed words
     const [filledArray, setFilledArray] = useState<string[]>(
@@ -49,7 +56,7 @@ export default function RenderText({ quote }: Props) {
     const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
 
     const [isTimerStarted, setIsTimerStarted] = useState(false);
-    const [wpm, setWpm] = useState(0);
+    const [result, setResult] = useState<Result>();
 
     const [inputValue, setInputValue] = useState("");
     const [isInputFocused, setIsInputFocused] = useState(true);
@@ -73,7 +80,13 @@ export default function RenderText({ quote }: Props) {
             setIsGameFinished(true);
             const minutes = timer.stopTimer();
             const wpm = textArray.length / minutes;
-            setWpm(wpm);
+            // setWpm(wpm);
+            setResult({
+                wpm: wpm.toFixed(2),
+                time: (minutes * 60).toFixed(2),
+                source: quote?.source || "",
+                accuracy: "~",
+            });
             setIsTimerStarted(false);
             return;
         }
@@ -176,12 +189,12 @@ export default function RenderText({ quote }: Props) {
     const handleFocusChange = (isFocused: boolean) => {
         setIsInputFocused(isFocused);
     };
-    const handleTryAgain = () => {
-        setTextArray(getLetterObjArray(getRandomQuote()?.Text));
+    const handleTryAgain = async () => {
+        setTextArray(getLetterObjArray((await getRandomParagraph())?.text));
         setFilledArray(new Array(textArray.length).fill(""));
         setCurrentWordIndex(0);
         setIsTimerStarted(false);
-        setWpm(0);
+        setResult(undefined);
         setInputValue("");
         setIsGameFinished(false);
     };
@@ -200,7 +213,7 @@ export default function RenderText({ quote }: Props) {
     return (
         <FinishGameWrapper
             isGameFinished={isGameFinished}
-            wpm={wpm}
+            result={result}
             onTryAgain={handleTryAgain}
         >
             <Card>
@@ -232,7 +245,7 @@ export default function RenderText({ quote }: Props) {
                     )}
                 </div>
             </Card>
-            <div className="mt-4 w-1/2 mx-auto absolute top-0">
+            <div className="mt-4 w-6 absolute top-0 -z-10">
                 <TypeInput
                     inputValue={inputValue}
                     isFocused={isInputFocused}

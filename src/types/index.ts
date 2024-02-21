@@ -1,9 +1,9 @@
 import _sample from "lodash/sample";
 
 export type LetterObj = { color: "w" | "g" | "r"; letter: string };
-export const getRandomQuote = () => {
-    return _sample(quotes);
-};
+// export const getRandomQuote = () => {
+//     return _sample(quotes) || { Text: "", Length: 0, Source: "" };
+// };
 export const quotes = [
     {
         Text: "You have the power to heal your life, and you need to know that.",

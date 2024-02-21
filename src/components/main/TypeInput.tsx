@@ -26,11 +26,7 @@ export default function TypeInput({
     }, [isFocused]);
 
     const handleOnBlur = () => {
-        // console.log("handleOnBlur isTextClicked", isTextClicked);
-        // if (!isTextClicked.current) {
         onFocusChange(false);
-        // onSetIsTextClicked(false);
-        // }
     };
 
     return (

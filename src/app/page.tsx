@@ -1,13 +1,12 @@
 import RenderText from "@/components/main/RenderText";
-import { getRandomQuote } from "@/types";
+import { getRandomParagraph } from "@/features/quote/action";
 
-export const revalidate = 300;
+export default async function Home() {
+    const randomQuote = await getRandomParagraph();
 
-export default function Home() {
-    const randomQuote = getRandomQuote();
     return (
         <>
-            <RenderText quote={randomQuote?.Text} />
+            <RenderText quote={randomQuote} />
         </>
     );
 }
