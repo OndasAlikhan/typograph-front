@@ -7,14 +7,8 @@ import { SecondsElapsed } from "./SecondsElapsed";
 import { FinishGameWrapper, Result } from "./FinishGameWrapper";
 import { Card } from "../common/Card";
 import { LetterObj } from "@/types";
-import { getRandomParagraph } from "@/features/quote/action";
+import { Quote } from "@/features/quotes/model";
 
-type Quote = {
-    id: number;
-    text: string;
-    source: string;
-    length: number;
-};
 type Props = {
     quote: Quote;
 };
@@ -222,7 +216,8 @@ export default function RenderText({ quote }: Props) {
         setIsInputFocused(isFocused);
     };
     const handleTryAgain = async () => {
-        setTextArray(getLetterObjArray((await getRandomParagraph())?.text));
+        const rp = await fetch("/api/random_quote").then((res) => res.json());
+        setTextArray(getLetterObjArray(rp?.text));
         setFilledArray(new Array(textArray.length).fill(""));
         setCurrentWordIndex(0);
         setIsTimerStarted(false);
